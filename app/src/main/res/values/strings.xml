@@ -1,0 +1,18 @@
+<resources>
+    <string name="Add_New">Add New</string>
+
+
+    <string name="editS">Edit Schedule</string>
+    <string name="deleteS">Delete Schedule</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="starttime">Start Time</string>
+    <string name="endtime">End Time</string>
+    <string name="venue">Venue</string>
+    <string name="saveSchedule">Save Schedule</string>
+    <string name="deleteSchedule">Are you sure, you want to delete it.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+
+</resources>

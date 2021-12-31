@@ -1,0 +1,209 @@
+<html>
+<head>
+<title>DisplaySchedules.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DisplaySchedules.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.todoapp</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.AlertDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.DialogInterface</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.Menu</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MenuItem</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+
+
+<span class="s0">public class </span><span class="s1">DisplaySchedules </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+    <span class="s0">private </span><span class="s1">DBHelper mydb </span><span class="s0">;</span>
+    <span class="s1">TextView Title </span><span class="s0">;</span>
+    <span class="s1">TextView Date</span><span class="s0">;</span>
+    <span class="s1">TextView StartTime</span><span class="s0">;</span>
+    <span class="s1">TextView EndTime</span><span class="s0">;</span>
+    <span class="s1">TextView Venue</span><span class="s0">;</span>
+    <span class="s0">int </span><span class="s1">id_To_Update = </span><span class="s2">0</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_display_schedules)</span><span class="s0">;</span>
+        <span class="s1">Title = (TextView) findViewById(R.id.editTextTitle)</span><span class="s0">;</span>
+        <span class="s1">Date = (TextView) findViewById(R.id.editTextDate)</span><span class="s0">;</span>
+        <span class="s1">StartTime = (TextView) findViewById(R.id.editTextStartTime)</span><span class="s0">;</span>
+        <span class="s1">EndTime = (TextView) findViewById(R.id.editTextEndTime)</span><span class="s0">;</span>
+        <span class="s1">Venue = (TextView) findViewById(R.id.editTextVenue)</span><span class="s0">;</span>
+
+        <span class="s1">mydb = </span><span class="s0">new </span><span class="s1">DBHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">Bundle extras = getIntent().getExtras()</span><span class="s0">;</span>
+        <span class="s0">if</span><span class="s1">(extras !=</span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">int </span><span class="s1">Value = extras.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+            <span class="s0">if</span><span class="s1">(Value&gt;</span><span class="s2">0</span><span class="s1">){</span>
+                <span class="s4">//means this is the view part not the add contact part.</span>
+                <span class="s1">Cursor rs = mydb.getScheduleData(Value)</span><span class="s0">;</span>
+                <span class="s1">id_To_Update = Value</span><span class="s0">;</span>
+                <span class="s1">rs.moveToFirst()</span><span class="s0">;</span>
+
+                <span class="s1">String Titl = rs.getString(rs.getColumnIndex(DBHelper.SCHEDULES_COLUMN_TITLE))</span><span class="s0">;</span>
+                <span class="s1">String Dat = rs.getString(rs.getColumnIndex(DBHelper.SCHEDULES_COLUMN_DATE))</span><span class="s0">;</span>
+                <span class="s1">String StartTim = rs.getString(rs.getColumnIndex(DBHelper.SCHEDULES_COLUMN_STARTTIME))</span><span class="s0">;</span>
+                <span class="s1">String EndTim = rs.getString(rs.getColumnIndex(DBHelper.SCHEDULES_COLUMN_ENDTIME))</span><span class="s0">;</span>
+                <span class="s1">String Venu = rs.getString(rs.getColumnIndex(DBHelper.SCHEDULES_COLUMN_VENUE))</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(!rs.isClosed())  {</span>
+                    <span class="s1">rs.close()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s1">Button b = (Button)findViewById(R.id.button1)</span><span class="s0">;</span>
+                <span class="s1">b.setVisibility(View.INVISIBLE)</span><span class="s0">;</span>
+
+                <span class="s1">Title.setText((CharSequence)Titl)</span><span class="s0">;</span>
+                <span class="s1">Title.setFocusable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Title.setClickable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">Date.setText((CharSequence)Dat)</span><span class="s0">;</span>
+                <span class="s1">Date.setFocusable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Date.setClickable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">StartTime.setText((CharSequence)StartTim)</span><span class="s0">;</span>
+                <span class="s1">StartTime.setFocusable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">StartTime.setClickable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">EndTime.setText((CharSequence)EndTim)</span><span class="s0">;</span>
+                <span class="s1">EndTime.setFocusable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">EndTime.setClickable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">Venue.setText((CharSequence)Venu)</span><span class="s0">;</span>
+                <span class="s1">Venue.setFocusable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Venue.setClickable(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onCreateOptionsMenu(Menu menu) {</span>
+        <span class="s4">// Inflate the menu; this adds items to the action bar if it is present.</span>
+        <span class="s1">Bundle extras = getIntent().getExtras()</span><span class="s0">;</span>
+
+        <span class="s0">if</span><span class="s1">(extras !=</span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">int </span><span class="s1">Value = extras.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s0">if</span><span class="s1">(Value&gt;</span><span class="s2">0</span><span class="s1">){</span>
+                <span class="s1">getMenuInflater().inflate(R.menu.display_schedule</span><span class="s0">, </span><span class="s1">menu)</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">else</span><span class="s1">{</span>
+                <span class="s1">getMenuInflater().inflate(R.menu.main_menu</span><span class="s0">, </span><span class="s1">menu)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">return true;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">onOptionsItemSelected(MenuItem item) {</span>
+        <span class="s0">super</span><span class="s1">.onOptionsItemSelected(item)</span><span class="s0">;</span>
+        <span class="s0">switch</span><span class="s1">(item.getItemId()) {</span>
+            <span class="s0">case </span><span class="s1">R.id.Edit_Schedule:</span>
+                <span class="s1">Button b = (Button)findViewById(R.id.button1)</span><span class="s0">;</span>
+                <span class="s1">b.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                <span class="s1">Title.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Title.setFocusableInTouchMode(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Title.setClickable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">Date.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Date.setFocusableInTouchMode(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Date.setClickable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">StartTime.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">StartTime.setFocusableInTouchMode(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">StartTime.setClickable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">EndTime.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">EndTime.setFocusableInTouchMode(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">EndTime.setClickable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">Venue.setEnabled(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Venue.setFocusableInTouchMode(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">Venue.setClickable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s0">return true;</span>
+            <span class="s0">case </span><span class="s1">R.id.Delete_Schedule:</span>
+
+                <span class="s1">AlertDialog.Builder builder = </span><span class="s0">new </span><span class="s1">AlertDialog.Builder(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">builder.setMessage(R.string.deleteSchedule)</span>
+                        <span class="s1">.setPositiveButton(R.string.yes</span><span class="s0">, new </span><span class="s1">DialogInterface.OnClickListener() {</span>
+                            <span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog</span><span class="s0">, int </span><span class="s1">id) {</span>
+                                <span class="s1">mydb.deleteSchedule(id_To_Update)</span><span class="s0">;</span>
+                                <span class="s1">Toast.makeText(getApplicationContext()</span><span class="s0">, </span><span class="s3">&quot;Deleted Successfully&quot;</span><span class="s0">,</span>
+                                        <span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,</span><span class="s1">Schedule.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">})</span>
+                        <span class="s1">.setNegativeButton(R.string.no</span><span class="s0">, new </span><span class="s1">DialogInterface.OnClickListener() {</span>
+                            <span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog</span><span class="s0">, int </span><span class="s1">id) {</span>
+                                <span class="s4">// User cancelled the dialog</span>
+                            <span class="s1">}</span>
+                        <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">AlertDialog d = builder.create()</span><span class="s0">;</span>
+                <span class="s1">d.setTitle(</span><span class="s3">&quot;Are you sure&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">d.show()</span><span class="s0">;</span>
+
+                <span class="s0">return true;</span>
+            <span class="s0">default</span><span class="s1">:</span>
+                <span class="s0">return super</span><span class="s1">.onOptionsItemSelected(item)</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">run(View view) {</span>
+        <span class="s1">Bundle extras = getIntent().getExtras()</span><span class="s0">;</span>
+        <span class="s0">if</span><span class="s1">(extras !=</span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">int </span><span class="s1">Value = extras.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s0">if</span><span class="s1">(Value&gt;</span><span class="s2">0</span><span class="s1">){</span>
+                <span class="s0">if</span><span class="s1">(mydb.updateSchedule(id_To_Update</span><span class="s0">,</span><span class="s1">Title.getText().toString()</span><span class="s0">,</span>
+                        <span class="s1">Date.getText().toString()</span><span class="s0">, </span><span class="s1">StartTime.getText().toString()</span><span class="s0">,</span>
+                        <span class="s1">EndTime.getText().toString()</span><span class="s0">, </span><span class="s1">Venue.getText().toString())){</span>
+                    <span class="s1">Toast.makeText(getApplicationContext()</span><span class="s0">, </span><span class="s3">&quot;Updated&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,</span><span class="s1">Schedule.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">} </span><span class="s0">else</span><span class="s1">{</span>
+                    <span class="s1">Toast.makeText(getApplicationContext()</span><span class="s0">, </span><span class="s3">&quot;not Updated&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">} </span><span class="s0">else</span><span class="s1">{</span>
+                <span class="s0">if</span><span class="s1">(mydb.insertSchedule(Title.getText().toString()</span><span class="s0">, </span><span class="s1">Date.getText().toString()</span><span class="s0">,</span>
+                        <span class="s1">StartTime.getText().toString()</span><span class="s0">, </span><span class="s1">EndTime.getText().toString()</span><span class="s0">,</span>
+                        <span class="s1">Venue.getText().toString())){</span>
+                    <span class="s1">Toast.makeText(getApplicationContext()</span><span class="s0">, </span><span class="s3">&quot;done&quot;</span><span class="s0">,</span>
+                            <span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">} </span><span class="s0">else</span><span class="s1">{</span>
+                    <span class="s1">Toast.makeText(getApplicationContext()</span><span class="s0">, </span><span class="s3">&quot;not done&quot;</span><span class="s0">,</span>
+                            <span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">,</span><span class="s1">Schedule.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
